@@ -7,6 +7,7 @@ class camera {
  public:
   double aspect_ratio = 1.0;
   int img_width = 100;
+  int samples_per_pixel = 10;
 
   void render(const hittable& world) {
     initialize();
@@ -16,11 +17,12 @@ class camera {
 
     for (int i = 0; i < img_height; i++) {
       for (int j = 0; j < img_width; j++) {
-        point3 pixel_ceter =
-            pixel_loc_00 + i * pixel_delta_y + j * pixel_delta_x;
-        ray r(camera_loc, pixel_ceter - camera_loc);
-        color pixel_color = ray_color(r, world);
-
+        color pixel_color = color(0, 0, 0);
+        for (auto s = 0; s < samples_per_pixel; s++) {
+          ray r = get_ray(i, j);
+          pixel_color += ray_color(r, world);
+        }
+        pixel_color /= samples_per_pixel;
         write_color(std::cout, pixel_color);
       }
     }
@@ -55,6 +57,14 @@ class camera {
 
     pixel_loc_00 = camera_loc + vec3(0, 0, focal_length) - viewport_x / 2 -
                    viewport_y / 2 + pixel_delta_x + pixel_delta_y;
+  }
+
+  ray get_ray(int i, int j) const {
+    point3 pixel_ceter = pixel_loc_00 + i * pixel_delta_y + j * pixel_delta_x;
+    point3 pixel_random = pixel_ceter +
+                          (random_double() - 0.5) * pixel_delta_x +
+                          (random_double() - 0.5) * pixel_delta_y;
+    return ray(camera_loc, pixel_random - camera_loc);
   }
 
   color ray_color(const ray& r, const hittable& world) const {
