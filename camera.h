@@ -8,6 +8,7 @@ class camera {
   double aspect_ratio = 1.0;
   int img_width = 100;
   int samples_per_pixel = 10;
+  int max_depth = 10;
 
   void render(const hittable& world) {
     initialize();
@@ -20,7 +21,7 @@ class camera {
         color pixel_color = color(0, 0, 0);
         for (auto s = 0; s < samples_per_pixel; s++) {
           ray r = get_ray(i, j);
-          pixel_color += ray_color(r, world);
+          pixel_color += ray_color(r, world, max_depth);
         }
         pixel_color /= samples_per_pixel;
         write_color(std::cout, pixel_color);
@@ -67,10 +68,13 @@ class camera {
     return ray(camera_loc, pixel_random - camera_loc);
   }
 
-  color ray_color(const ray& r, const hittable& world) const {
+  color ray_color(const ray& r, const hittable& world, int depth) const {
+    if (depth < 0) return color(0, 0, 0);
+
     hit_record hit_r{};
-    if (world.hit(r, interval(0, infinity), hit_r))
-      return 0.5 * (hit_r.normal + color(1, 1, 1));
+    if (world.hit(r, interval(0.001, infinity), hit_r))
+      return 0.5 * (ray_color(ray(hit_r.p, hit_r.normal + random_unit_vector()),
+                              world, depth - 1));
 
     double a = 0.5 * (unit(r.diraction()).y() + 1.0);
     return color(0.5, 0.7, 1.0) * a + (1 - a) * color(1.0, 1.0, 1.0);

@@ -35,8 +35,19 @@ class vec3 {
 
   vec3& operator/=(double v) { return *this *= 1 / v; }
 
-  double length() const {
-    return std::sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
+  double length() const { return std::sqrt(length_squared()); }
+
+  double length_squared() const {
+    return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+  }
+
+  static vec3 random() {
+    return vec3(random_double(), random_double(), random_double());
+  }
+
+  static vec3 random(double min, double max) {
+    return vec3(random_double(min, max), random_double(min, max),
+                random_double(min, max));
   }
 };
 
@@ -79,5 +90,18 @@ inline vec3 cross(const vec3& v1, const vec3& v2) {
 }
 
 inline vec3 unit(const vec3& v) { return v / v.length(); }
+
+inline vec3 random_unit_vector() {
+  while (true) {
+    auto p = vec3::random(-1, 1);
+    auto lensq = p.length_squared();
+    if (1e-160 < lensq && lensq <= 1) return p / sqrt(lensq);
+  }
+}
+
+inline vec3 random_on_hemisphere(const vec3& normal) {
+  vec3 on_unit_sphere = random_unit_vector();
+  return (dot(normal, on_unit_sphere) > 0.0) ? on_unit_sphere : -on_unit_sphere;
+}
 
 #endif
