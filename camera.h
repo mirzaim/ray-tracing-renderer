@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "hittable.h"
+#include "material.h"
 
 class camera {
  public:
@@ -72,9 +73,13 @@ class camera {
     if (depth < 0) return color(0, 0, 0);
 
     hit_record hit_r{};
-    if (world.hit(r, interval(0.001, infinity), hit_r))
-      return 0.5 * (ray_color(ray(hit_r.p, hit_r.normal + random_unit_vector()),
-                              world, depth - 1));
+    if (world.hit(r, interval(0.001, infinity), hit_r)) {
+      ray scatter;
+      color attenuation;
+      if (hit_r.mat->scatter(r, hit_r, attenuation, scatter))
+        return attenuation * ray_color(scatter, world, depth - 1);
+      return color(0, 0, 0);
+    }
 
     double a = 0.5 * (unit(r.diraction()).y() + 1.0);
     return color(0.5, 0.7, 1.0) * a + (1 - a) * color(1.0, 1.0, 1.0);
