@@ -11,6 +11,8 @@ class camera {
   int samples_per_pixel = 10;
   int max_depth = 10;
 
+  double vfov = 90;
+
   void render(const hittable& world) {
     initialize();
 
@@ -31,7 +33,6 @@ class camera {
   }
 
  private:
-  double viewport_height = 2.0;
   int img_height;
 
   vec3 pixel_delta_x;
@@ -48,9 +49,11 @@ class camera {
     img_height = (img_height > 1) ? img_height : 1;
 
     // View point
-    double const actual_aspect_ratio = double(img_width) / img_height;
+    auto theta = degrees_to_radians(vfov);
+    auto h = std::tan(theta / 2);
+    auto viewport_height = 2 * h * focal_length;
+    double viewport_width = viewport_height * double(img_width) / img_height;
 
-    double viewport_width = viewport_height * actual_aspect_ratio;
     vec3 viewport_x = vec3(viewport_width, 0, 0);
     vec3 viewport_y = vec3(0, -viewport_height, 0);
 

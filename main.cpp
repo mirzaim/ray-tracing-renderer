@@ -26,5 +26,7 @@ int main() {
   cam.samples_per_pixel = 20;
   cam.max_depth = 50;
 
+  cam.vfov = 90;
+
   cam.render(world);
 }
