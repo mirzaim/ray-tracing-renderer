@@ -4,15 +4,6 @@
 #include "sphere.h"
 #include "utility.h"
 
-color ray_color(const ray& r, hittable& world) {
-  hit_record hit_r{};
-  if (world.hit(r, interval(0, infinity), hit_r))
-    return 0.5 * (hit_r.normal + color(1, 1, 1));
-
-  double a = 0.5 * (unit(r.diraction()).y() + 1.0);
-  return color(0.5, 0.7, 1.0) * a + (1 - a) * color(1.0, 1.0, 1.0);
-}
-
 int main() {
   // World
   hittable_list world;
