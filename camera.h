@@ -12,6 +12,9 @@ class camera {
   int max_depth = 10;
 
   double vfov = 90;
+  point3 lookfrom = point3(0, 0, 0);
+  point3 lookat = point3(0, 0, 1);
+  vec3 vup = vec3(0, 1, 0);
 
   void render(const hittable& world) {
     initialize();
@@ -35,33 +38,41 @@ class camera {
  private:
   int img_height;
 
+  vec3 u, v, w;
   vec3 pixel_delta_x;
   vec3 pixel_delta_y;
 
   vec3 pixel_loc_00;
 
-  point3 camera_loc = point3(0, 0, 0);
-  double focal_length = 1.0;
+  point3 camera_loc;
+  double focal_length;
 
   void initialize() {
     // Image
     img_height = static_cast<int>(img_width / aspect_ratio);
     img_height = (img_height > 1) ? img_height : 1;
 
+    camera_loc = lookfrom;
+
     // View point
+    focal_length = (lookfrom - lookat).length();
     auto theta = degrees_to_radians(vfov);
     auto h = std::tan(theta / 2);
     auto viewport_height = 2 * h * focal_length;
     double viewport_width = viewport_height * double(img_width) / img_height;
 
-    vec3 viewport_x = vec3(viewport_width, 0, 0);
-    vec3 viewport_y = vec3(0, -viewport_height, 0);
+    w = unit(lookfrom - lookat);
+    u = unit(cross(w, vup));
+    v = cross(w, u);
+
+    vec3 viewport_x = viewport_width * u;
+    vec3 viewport_y = viewport_height * v;
 
     pixel_delta_x = viewport_x / img_width;
     pixel_delta_y = viewport_y / img_height;
 
-    pixel_loc_00 = camera_loc + vec3(0, 0, focal_length) - viewport_x / 2 -
-                   viewport_y / 2 + pixel_delta_x + pixel_delta_y;
+    pixel_loc_00 = camera_loc - focal_length * w - viewport_x / 2 -
+                   viewport_y / 2 + 0.5 * (pixel_delta_x + pixel_delta_y);
   }
 
   ray get_ray(int i, int j) const {

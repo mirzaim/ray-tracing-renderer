@@ -27,6 +27,9 @@ int main() {
   cam.max_depth = 50;
 
   cam.vfov = 90;
+  cam.lookfrom = point3(0, 0, 0);
+  cam.lookat = point3(0, 0, 1);
+  cam.vup = vec3(0, 1, 0);
 
   cam.render(world);
 }
