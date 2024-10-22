@@ -28,6 +28,22 @@ inline double random_double(double min, double max) {
   return min + (max - min) * random_double();
 }
 
+void print_progress(float progress, std::ostream& outp) {
+  int bar_width = 70;
+  outp << "[";
+  int pos = bar_width * progress;
+  for (int i = 0; i < bar_width; ++i) {
+    if (i < pos)
+      outp << "=";
+    else if (i == pos)
+      outp << ">";
+    else
+      outp << " ";
+  }
+  outp << "] " << int(progress * 100.0) << " %\r";
+  outp.flush();
+}
+
 #include "vec3.h"
 #include "color.h"
 #include "interval.h"
