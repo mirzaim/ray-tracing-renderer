@@ -1,9 +1,9 @@
-## Ray Tracing Project
+## Ray Tracing Renderer
 
-This project is a ray tracing engine developed in C++, focusing on rendering scenes with realistic lighting and reflections using core principles of ray tracing. It supports various materials and recursive reflections, showcasing how basic geometric shapes like spheres can be rendered in 3D space.
+This project is a ray tracing engine developed from scratch in C++ without any external dependencies. It focuses on rendering scenes with realistic lighting and reflections, using core principles of ray tracing. The renderer supports various materials and recursive reflections, showcasing how basic geometric shapes like spheres can be accurately rendered in 3D space.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/bc23d3b3-5987-4de8-aa84-2da7a895d908" alt="ray tracing output"/>
+  <img src="https://github.com/user-attachments/assets/bc23d3b3-5987-4de8-aa84-2da7a895d908" alt="ray tracing render output"/>
 </p>
 
 ### Overview
@@ -20,7 +20,7 @@ It was designed to explore the fundamentals of ray tracing, with additional opti
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mirzaim/ray-tracing.git
+   git clone https://github.com/mirzaim/ray-tracing-renderer.git
    cd ray-tracing
    ```
 
