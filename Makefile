@@ -1,6 +1,6 @@
 
-CC = g++
-FLAGS = -Wall -std=c++17
+CC = clang++
+FLAGS = -Wall -std=c++17 -fopenmp -lstdc++
 
 
 SRCS = main.cpp

@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <omp.h>
+
 #include "hittable.h"
 #include "material.h"
 
@@ -19,9 +21,13 @@ class camera {
   void render(const hittable& world) {
     initialize();
 
-    // Render
-    std::cout << "P3\n" << img_width << " " << img_height << "\n255\n";
+    int total_pixels = img_height * img_width;
+    int pixel_count = 0, prev_report = 0;
 
+    color* pixel_colors = new color[total_pixels];
+
+    // Render
+    #pragma omp parallel for collapse(2)
     for (int i = 0; i < img_height; i++) {
       for (int j = 0; j < img_width; j++) {
         color pixel_color = color(0, 0, 0);
@@ -30,9 +36,26 @@ class camera {
           pixel_color += ray_color(r, world, max_depth);
         }
         pixel_color /= samples_per_pixel;
-        write_color(std::cout, pixel_color);
+        pixel_colors[i * img_width + j] = pixel_color;
+
+        #pragma omp atomic
+        ++pixel_count;
+
+        if ((omp_get_thread_num() == 0) && (pixel_count > prev_report + 500)) {
+          std::cerr << pixel_count << ' ' << total_pixels << '\n';
+          prev_report = pixel_count;
+        }
       }
     }
+
+    std::cout << "P3\n" << img_width << " " << img_height << "\n255\n";
+    for (int i = 0; i < img_height; i++) {
+      for (int j = 0; j < img_width; j++) {
+        write_color(std::cout, pixel_colors[i * img_width + j]);
+      }
+    }
+
+    delete[] pixel_colors;
   }
 
  private:
