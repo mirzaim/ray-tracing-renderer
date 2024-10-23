@@ -2,7 +2,9 @@
 
 This project is a ray tracing engine developed in C++, focusing on rendering scenes with realistic lighting and reflections using core principles of ray tracing. It supports various materials and recursive reflections, showcasing how basic geometric shapes like spheres can be rendered in 3D space.
 
-<!-- sample image here -->
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bc23d3b3-5987-4de8-aa84-2da7a895d908" alt="ray tracing output"/>
+</p>
 
 ### Overview
 This ray tracer implements key features including:
